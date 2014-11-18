@@ -1,7 +1,7 @@
 (ns leiningen.todo
   (:use [leiningen.compile :only (eval-in-project)])
   (:use [clojure.java.io :only [file]])
-  (:use [clojure.contrib.find-namespaces :only [find-namespaces-in-dir]]))
+  (:use [clojure.tools.namespace.find :only [find-namespaces-in-dir]]))
 
 (defn delete-recursively [fname]
   (let [func (fn [func f]
