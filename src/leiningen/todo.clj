@@ -1,7 +1,15 @@
 (ns leiningen.todo
   (:use [leiningen.compile :only (eval-in-project)])
-  (:use [clojure.contrib.io :only [file delete-file-recursively]])
+  (:use [clojure.java.io :only [file]])
   (:use [clojure.contrib.find-namespaces :only [find-namespaces-in-dir]]))
+
+(defn delete-recursively [fname]
+  (let [func (fn [func f]
+               (when (.isDirectory f)
+                 (doseq [f2 (.listFiles f)]
+                   (func func f2)))
+               (clojure.java.io/delete-file f))]
+    (func func (clojure.java.io/file fname))))
 
 (defn todo
   "Prints a summary of todos annotated using clj-todo.todo/todo.
@@ -13,7 +21,7 @@
   (let [namespaces (if (seq namespaces)
                      (map symbol namespaces)
                      (find-namespaces-in-dir (file (:source-path project))))]
-    (delete-file-recursively (file (:compile-path project)) true)
+    (delete-recursively (file (:compile-path project)) true)
     (eval-in-project project
                      `(do
                         (require '~'clj-todo)
