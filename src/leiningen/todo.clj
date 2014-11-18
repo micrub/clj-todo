@@ -1,5 +1,5 @@
 (ns leiningen.todo
-  (:use [leiningen.compile :only (eval-in-project)])
+  (:use [leiningen.core.eval :only (eval-in-project)])
   (:use [clojure.java.io :only [file]])
   (:use [clojure.tools.namespace.find :only [find-namespaces-in-dir]]))
 
