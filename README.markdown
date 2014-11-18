@@ -56,3 +56,20 @@ At the moment, running `lein todo` will remove all compiled files as the program
 
 If `:todo-log` is given in `project.clj`, todos will also be written to that file.
 See [`project.clj`](http://github.com/tgk/clj-todo/blob/master/project.clj) for an example of this.
+
+
+## Defect
+
+1. Old deps
+
+```bash
+Could not find artifact org.clojure:clojure-contrib:jar:1.2.0-SNAPSHOT in clojars (https://clojars.org/repo/)
+Could not find artifact org.clojure:clojure-contrib:jar:1.2.0-SNAPSHOT in clojure (http://build.clojure.org/releases)
+Could not find artifact org.clojure:clojure-contrib:jar:1.2.0-SNAPSHOT in clojure-snapshots (http://build.clojure.org/snapshots)
+Could not find artifact leiningen:leiningen:jar:1.1.0 in central (https://repo1.maven.org/maven2/)
+Could not find artifact leiningen:leiningen:jar:1.1.0 in clojars (https://clojars.org/repo/)
+Could not find artifact leiningen:leiningen:jar:1.1.0 in clojure (http://build.clojure.org/releases)
+Could not find artifact leiningen:leiningen:jar:1.1.0 in clojure-snapshots (http://build.clojure.org/snapshots)
+This could be due to a typo in :dependencies or network issues.
+If you are behind a proxy, try setting the 'http_proxy' environment variable.
+```
