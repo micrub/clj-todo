@@ -39,9 +39,9 @@
     (catch Exception e (print-warning (ns-find-waring e dir-path)))))
 
 (defn- get-namespaces [source-paths]
-  (map
+  (first (map
     safely-find-namespaces-in-dir
-    source-paths))
+    source-paths)))
 
 (defn todo
   "Prints a summary of todos annotated using clj-todo.todo/todo.
