@@ -33,7 +33,7 @@
   clj-todo
   (:use [clojure.pprint]))
 
-(def *todo-log* (atom []))
+(def ^:dynamic *todo-log* (atom []))
 
 (defn- save-code-and-snippet
   "Helper function for saving comment and code-str in the todo log."
