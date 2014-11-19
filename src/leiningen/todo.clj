@@ -33,10 +33,12 @@
     (concat (source-paths-key p/defaults)
             (source-paths-key (source-paths-key project)))))
 
-(defn- safely-find-namespaces-in-dir [^String dir-path]
+(defn- safely-find-namespaces-in-dir
+  [^String dir-path]
   (try
     (find-namespaces-in-dir (file dir-path))
-    (catch Exception e (print-warning (ns-find-waring e dir-path)))))
+    (catch Exception e
+      (print-warning (ns-find-waring e dir-path)))))
 
 (defn- get-namespaces [source-paths]
   (first (map
@@ -52,7 +54,8 @@
   [project & namespaces]
   (let [namespaces (if (seq namespaces)
                      (map symbol namespaces)
-                     (get-namespaces (get-source-paths project)))]
+                     (get-namespaces
+                       (get-source-paths project)))]
     ;; TODO why do we delete here ? because of eval later ?
     (delete-recursively (file (:compile-path project)))
     (eval-summary project namespaces)
@@ -66,7 +69,8 @@
                      `(do
                         (require '~'clj-todo)
                         (apply require '~namespaces)
-                        (clj-todo/todo-summary-file ~(:todo-log project))))
+                        (clj-todo/todo-summary-file
+                          ~(:todo-log project))))
     (eval-in-project project
                      `(do
                         (require '~'clj-todo)
