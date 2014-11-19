@@ -11,45 +11,45 @@
 ;;  thomas.g.kristensen (gmail)
 ;;  25 May 2010
 
-(ns 
-    #^{:author "Thomas G. Kristensen"
+(ns #^{:author "Thomas G. Kristensen"
        :doc "Libary for adding todo statements to a clojure program.
 
-Wrap any form in a todo to add a reminder to revisit the code later.
+            Wrap any form in a todo to add a reminder to revisit the code later.
 
-(todo
- \"I don't like how this function works at all. It could be O(1).\"
- (defn range-sum 
-   [n]
-   (reduce + (range n))))
+            (todo
+            \"I don't like how this function works at all. It could be O(1).\"
+            (defn range-sum
+            [n]
+            (reduce + (range n))))
 
-To review the annotations use the todo-summary function.
+            To review the annotations use the todo-summary function.
 
-(todo-summary)
+            (todo-summary)
 
-Summary of todos:
+            Summary of todos:
 
-I don't like how this function works at all. It could be O(1).
-(defn range-sum [n] (reduce + (range n)))"}
-  clj-todo 
+            I don't like how this function works at all. It could be O(1).
+            (defn range-sum [n] (reduce + (range n)))"}
+  clj-todo
   (:use [clojure.pprint]))
 
-(def *todo-log* (atom []))
+(def ^:dynamic *todo-log* (atom []))
 
-(defn- save-code-and-snippet 
+(defn- save-code-and-snippet
   "Helper function for saving comment and code-str in the todo log."
   [comment code-str]
   (swap! *todo-log* conj [comment code-str]))
 
-(defmacro todo 
+(defmacro todo
   "Annotates a form with a comment for later review.
   Adds the comment and the form to the batch of todos, which
   can be revied later using todo-summary."
-  [comment body] 
+  [comment body]
   (do
-    (save-code-and-snippet 
-     comment 
-     (with-out-str (with-pprint-dispatch code-dispatch (pprint body))))
+    (save-code-and-snippet
+      (str (clojure.string/join " " [*ns* *file* `~(meta body)]) "\n"
+           "  " comment "\n")
+      (with-out-str (with-pprint-dispatch code-dispatch (pprint body))))
     body))
 
 (defn clear-todos
@@ -60,11 +60,11 @@ I don't like how this function works at all. It could be O(1).
 (defn todo-summary-str
   "Returns a summary of the todos in the project"
   []
-  (apply 
-   str "Summary of todos:\n\n"
-   (map (fn [[comment code-str]] 
-	  (str comment "\n" code-str "\n"))
-	@*todo-log*)))
+  (apply
+    str "Summary of todos:\n\n"
+    (map (fn [[comment code-str]]
+           (str comment "\n" code-str "\n"))
+         @*todo-log*)))
 
 (defn todo-summary
   "Prints a summary of the todos in the project."
