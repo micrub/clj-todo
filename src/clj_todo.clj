@@ -47,7 +47,8 @@
   [comment body]
   (do
     (save-code-and-snippet
-      comment
+      (str (clojure.string/join " " [*ns* *file* `~(meta body)]) "\n"
+           "  " comment "\n")
       (with-out-str (with-pprint-dispatch code-dispatch (pprint body))))
     body))
 
