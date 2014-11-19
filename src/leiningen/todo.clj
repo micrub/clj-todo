@@ -4,7 +4,17 @@
   (:require [leiningen.core.project :as p])
   (:use [clojure.tools.namespace.find :only [find-namespaces-in-dir]]))
 
-(defn delete-recursively [fname]
+(declare eval-summary)
+
+(defn- style [msg & args]
+  msg)
+
+(defn- print-warning [msg]
+  (let [label (style "Warning:" :bg-yellow)
+        msg   (style (str msg) :yellow :underline)]
+    (println label " " msg)))
+
+(defn- delete-recursively [fname]
   (let [func (fn [func f]
                (when (.isDirectory f)
                  (doseq [f2 (.listFiles f)]
@@ -42,16 +52,23 @@
   [project & namespaces]
   (let [namespaces (if (seq namespaces)
                      (map symbol namespaces)
-                     (find-namespaces-in-dir (file (:source-path project))))]
-    (delete-recursively (file (:compile-path project)) true)
+                     (get-namespaces (get-source-paths project)))]
+    ;; TODO why do we delete here ? because of eval later ?
+    (delete-recursively (file (:compile-path project)))
+    (eval-summary project namespaces)
+    ;; also write to file if defined in :todo-log
+    (if (contains? project :todo-log)
+      (eval-summary project namespaces true))))
+
+(defn- eval-summary [project namespaces & todo-log]
+  (if todo-log
     (eval-in-project project
                      `(do
                         (require '~'clj-todo)
                         (apply require '~namespaces)
-                        (clj-todo/todo-summary)))
-    (if (contains? project :todo-log)
-      (eval-in-project project
-                       `(do
-                          (require '~'clj-todo)
-                          (apply require '~namespaces)
-                          (clj-todo/todo-summary-file ~(:todo-log project)))))))
+                        (clj-todo/todo-summary-file ~(:todo-log project))))
+    (eval-in-project project
+                     `(do
+                        (require '~'clj-todo)
+                        (apply require '~namespaces)
+                        (clj-todo/todo-summary)))))
