@@ -1,4 +1,4 @@
-# Clojure to do annotation 
+# Clojure to do annotation
 
 The `clj-todo` lib is designed for easily annotating Clojure programs with todo items.
 The lib generates a todo summary which includes code fragments to make it easy to extract all todos without having to read trough the entire source code.
@@ -6,18 +6,22 @@ As Clojure code (idiomatically) is written as small atomic components these repo
 
 ## Installation
 
-`clj-todo` version 0.4.0 is uploaded to [clojars](http://clojars.org). 
+`clj-todo` version `0.5.0` is uploaded to [clojars](http://clojars.org).
 To use it, simply add it to your lein dependencies as
 
-    [clj-todo "0.4.0-SNAPSHOT"]
+    [micrub/clj-todo "0.5.0"]
 
-The current version (0.4.0) is targeted at Clojure 1.2.0 and Clojure contrib 1.2.0.
+The current version `0.5.0` is targeted at Clojure `1.6.0`.
+[![Clojars Project](http://clojars.org/micrub/clj-todo/latest-version.svg)](http://clojars.org/micrub/clj-todo)
 
 ## Example usage
 
-Here is a full example of using the `todo` macro: (also included in [source](http://github.com/tgk/clj-todo/blob/master/src/clj_todo/example.clj))
 
-<pre>
+*At the moment, running `lein todo` will remove all compiled files as the program has to expand macros to build the todo log.*
+
+Here is a full example of using the `todo` macro: (also included in [source](http://github.com/micrub/clj-todo/blob/master/src/clj_todo/example.clj))
+
+```
 (ns clj-todo.example
   (:use clj-todo))
 
@@ -33,43 +37,38 @@ Here is a full example of using the `todo` macro: (also included in [source](htt
 
 (todo
  "I don't like how this function works at all. It could be O(1)."
- (defn range-sum 
+ (defn range-sum
    [n]
    (reduce + (range n))))
-</pre>
+```
 
 To get a summary of the todos use `lein todo`.
-If `lein todo` is given a list of namespaces it will print the todos of these. 
+Uses `project.clj` `:source-paths` map property to get source folders, find namespaces in all folders defined.
+For example:
+```
+:source-paths ["src" "tests"]
+```
+
+By default it will search for namespaces in `src/` folder,which is default source-path defined for leiningen.
+
+
+If `lein todo` is given a list of namespaces it will print the todos of these.
 If none is given it will use all namespaces in the project.
 
-<pre>
+```
 Summary of todos:
 
-This part looks ugly
+clj-todo.example clj_todo/example.clj {:line 10, :column 6}
+  This part looks ugly
+
 (map param-1 (repeat param-2))
 
-I don't like how this function works at all. It could be O(1).
-(defn range-sum [n] (reduce + (range n)))
-</pre>
+clj-todo.example clj_todo/example.clj {:line 15, :column 2}
+  I don't like how this function works at all. It could be O(1).
 
-At the moment, running `lein todo` will remove all compiled files as the program has to expand macros to build the todo log.
+(defn range-sum [n] (reduce + (range n)))
+```
+
 
 If `:todo-log` is given in `project.clj`, todos will also be written to that file.
-See [`project.clj`](http://github.com/tgk/clj-todo/blob/master/project.clj) for an example of this.
-
-
-## Defect
-
-1. Old deps
-
-```bash
-Could not find artifact org.clojure:clojure-contrib:jar:1.2.0-SNAPSHOT in clojars (https://clojars.org/repo/)
-Could not find artifact org.clojure:clojure-contrib:jar:1.2.0-SNAPSHOT in clojure (http://build.clojure.org/releases)
-Could not find artifact org.clojure:clojure-contrib:jar:1.2.0-SNAPSHOT in clojure-snapshots (http://build.clojure.org/snapshots)
-Could not find artifact leiningen:leiningen:jar:1.1.0 in central (https://repo1.maven.org/maven2/)
-Could not find artifact leiningen:leiningen:jar:1.1.0 in clojars (https://clojars.org/repo/)
-Could not find artifact leiningen:leiningen:jar:1.1.0 in clojure (http://build.clojure.org/releases)
-Could not find artifact leiningen:leiningen:jar:1.1.0 in clojure-snapshots (http://build.clojure.org/snapshots)
-This could be due to a typo in :dependencies or network issues.
-If you are behind a proxy, try setting the 'http_proxy' environment variable.
-```
+See [`project.clj`](http://github.com/micrub/clj-todo/blob/master/project.clj) for an example of this.
